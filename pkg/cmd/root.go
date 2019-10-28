@@ -19,8 +19,8 @@ var rootCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Short: "tfdd explores a Terraform project and checks for drift",
 	Long: `tfdd (Terraform Drift Detector) takes a Terraform project root as
-input and visits all subdirectories to check for drift. Created
-by Github user @virtualdom in Go.
+input and visits all subdirectories to check for drift. Run "tfdd configure"
+to begin. Created by Github user @virtualdom in Go.
 Complete documentation is available at https://github.com/virtualdom/tfdd`,
 	Version: version,
 
@@ -60,7 +60,7 @@ func init() {
 	rootCmd.Flags().BoolP("version", "v", false, "print Captain version number")
 
 	// Add Captain commands.
-	// rootCmd.AddCommand(command goes here)
+	rootCmd.AddCommand(NewConfigureCmd())
 
 	// Prevent usage message from being printed out upon command error.
 	rootCmd.SilenceUsage = true
