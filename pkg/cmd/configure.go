@@ -81,7 +81,7 @@ func NewConfigureCmd() *cobra.Command {
 
 				profile := &config.Profile{
 					AccountID: accountID,
-					Name: name,
+					Name:      name,
 				}
 
 				cc.cfg.Profiles = append(cc.cfg.Profiles, profile)
@@ -96,7 +96,7 @@ func NewConfigureCmd() *cobra.Command {
 
 					repeat = strings.TrimSpace(strings.ToLower(repeat))
 					if repeat == "n" || repeat == "y" || repeat == "" {
-						break;
+						break
 					}
 
 					fmt.Print("Invalid input [Y/n]: ")

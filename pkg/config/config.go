@@ -18,7 +18,7 @@ const NIL_CONFIG = `{
 }`
 
 type Config struct {
-	Path string         `json:"-"`
+	Path     string     `json:"-"`
 	Profiles []*Profile `json:"profiles"`
 }
 
