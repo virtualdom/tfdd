@@ -112,7 +112,7 @@ func NewConfigureCmd() *cobra.Command {
 				return err
 			}
 
-			fmt.Printf("Saved config to %v", cc.cfg.Path)
+			fmt.Printf("Saved config to %v\n", cc.cfg.Path)
 			return nil
 		},
 	}
