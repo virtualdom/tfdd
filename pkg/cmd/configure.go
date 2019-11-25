@@ -20,6 +20,7 @@ type configureCmd struct {
 	cfg *config.Config
 }
 
+// NewConfigureCmd returns a Cobra command that sets up the tfdd confuration.
 func NewConfigureCmd() *cobra.Command {
 	cc := &configureCmd{}
 
