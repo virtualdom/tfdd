@@ -23,9 +23,9 @@ const (
 	sessionToken    = "aws_session_token"
 )
 
-// AuthI is meant to be run as a goroutine that authenticates after pausing for
+// Interval is meant to be run as a goroutine that authenticates after pausing for
 // the given interval in seconds.
-func AuthI(cfg *config.Config, sts stsiface.STSAPI, roleName string, interval int) {
+func Interval(cfg *config.Config, sts stsiface.STSAPI, roleName string, interval int) {
 	for {
 		time.Sleep(time.Duration(interval) * time.Second)
 		Auth(cfg, sts, roleName)
@@ -47,7 +47,10 @@ func Auth(cfg *config.Config, stsClient stsiface.STSAPI, roleName string) {
 		}
 	}
 
-	writeCreds(creds)
+	err := writeCreds(creds)
+	if err != nil {
+		fmt.Printf("failed to write credentials to %s\n", cfg.Path)
+	}
 }
 
 func getCreds(roleArn string, svc stsiface.STSAPI) (*sts.Credentials, error) {

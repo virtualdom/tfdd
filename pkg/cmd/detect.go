@@ -60,15 +60,14 @@ func NewDetectCmd() *cobra.Command {
 				var sts *sts.STS
 				var err error
 
-				if dc.profile != "" {
+				switch {
+				case dc.profile != "":
 					sts, err = aws.NewSTSClient(dc.profile)
-				} else if dc.accessKey != "" && dc.secretKey != "" {
-					if dc.sessionToken != "" {
-						sts, err = aws.NewSTSClient(dc.accessKey, dc.secretKey, dc.sessionToken)
-					} else {
-						sts, err = aws.NewSTSClient(dc.accessKey, dc.secretKey)
-					}
-				} else {
+				case dc.accessKey != "" && dc.secretKey != "" && dc.sessionToken != "":
+					sts, err = aws.NewSTSClient(dc.accessKey, dc.secretKey, dc.sessionToken)
+				case dc.accessKey != "" && dc.secretKey != "":
+					sts, err = aws.NewSTSClient(dc.accessKey, dc.secretKey)
+				default:
 					sts, err = aws.NewSTSClient()
 				}
 
@@ -79,7 +78,7 @@ func NewDetectCmd() *cobra.Command {
 				auth.Auth(dc.cfg, sts, dc.auditRoleName)
 
 				if dc.authInterval >= 0 {
-					go auth.AuthI(dc.cfg, sts, dc.auditRoleName, dc.authInterval)
+					go auth.Interval(dc.cfg, sts, dc.auditRoleName, dc.authInterval)
 				}
 
 				// continue detect code here! Just needed an easy entrypoint to test auth.
