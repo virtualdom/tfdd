@@ -4,8 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"path"
-	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -15,8 +13,6 @@ import (
 )
 
 type configureCmd struct {
-	configFilePath string
-
 	cfg *config.Config
 }
 
@@ -32,17 +28,9 @@ func NewConfigureCmd() *cobra.Command {
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			var err error
 
-			if len(cc.configFilePath) == 0 {
-				cc.configFilePath = path.Join(os.Getenv("HOME"), ".tfdd", "config")
-			}
+			cc.cfg, err = getConfig(configFilePath)
 
-			cc.configFilePath, err = filepath.Abs(cc.configFilePath)
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("failed to get absolute path of %v", cc.configFilePath))
-			}
-
-			cc.cfg, err = config.New(cc.configFilePath)
-			return errors.Wrap(err, fmt.Sprintf("failed to load config file %v", cc.configFilePath))
+			return err
 		},
 
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -117,9 +105,6 @@ func NewConfigureCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	f := cmd.Flags()
-	f.StringVarP(&cc.configFilePath, "config-file", "c", os.Getenv("TFDD_CONFIG_FILE"), "specify config file. Can also set environment variable `TFDD_CONFIG_FILE`. Defaults to `~/.tfdd/config`.")
 
 	return cmd
 }
