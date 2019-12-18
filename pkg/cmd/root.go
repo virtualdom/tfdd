@@ -1,47 +1,25 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
 
 var (
-	rootDir string
-	version string // version can be overwritten by ldflags in the Makefile.
+	configFilePath string
+	version        string // version can be overwritten by ldflags in the Makefile.
 )
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "tfdd",
-	Args:  cobra.ExactArgs(1),
 	Short: "tfdd explores a Terraform project and checks for drift",
 	Long: `tfdd (Terraform Drift Detector) takes a Terraform project root as
 input and visits all subdirectories to check for drift. Run "tfdd configure"
 to begin. Created by Github user @virtualdom in Go.
 Complete documentation is available at https://github.com/virtualdom/tfdd`,
 	Version: version,
-
-	PreRun: func(cmd *cobra.Command, args []string) {
-		path, err := filepath.Abs(args[0])
-		if err != nil {
-			fmt.Println("failed to get absolute path of " + args[0])
-			os.Exit(1)
-		}
-
-		if _, err = os.Stat(path); os.IsNotExist(err) {
-			fmt.Println(path + " not found")
-			os.Exit(1)
-		}
-
-		rootDir = path
-	},
-
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(rootDir)
-	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -57,10 +35,12 @@ func init() {
 	}
 
 	// Add flags.
-	rootCmd.Flags().BoolP("version", "v", false, "print Captain version number")
+	rootCmd.Flags().BoolP("version", "v", false, "print tfdd version number")
+	rootCmd.PersistentFlags().StringVarP(&configFilePath, "config-file", "c", os.Getenv("TFDD_CONFIG_FILE"), "specify config file. Can also set environment variable `TFDD_CONFIG_FILE`. Defaults to `~/.tfdd/config`.")
 
-	// Add Captain commands.
+	// Add tfdd commands.
 	rootCmd.AddCommand(NewConfigureCmd())
+	rootCmd.AddCommand(NewDetectCmd())
 
 	// Prevent usage message from being printed out upon command error.
 	rootCmd.SilenceUsage = true
