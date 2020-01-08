@@ -44,6 +44,6 @@ func Process(path string, ch chan struct{}) {
 	// todo: delegate this to a `reporting` class that can optionally save these
 	// to a database to avoid frequent reporting (if this is being run in a cron)
 	if !strings.Contains(out, NO_CHANGE) {
-		fmt.Printf("drift detected in %s", path)
+		fmt.Printf("drift detected in %s\n", path)
 	}
 }

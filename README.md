@@ -57,7 +57,7 @@ tfdd supports assuming an audit role before executing a drift detection. This mi
 }
 ```
 
-**Create an auditing IAM role** in each concerned AWS account, and attach the AWS-managed [SecurityAudit](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_job-functions.html#jf_security-auditor) policy. This is the role that will be assumed before and during execution, so ensure this role is assumable by whatever IAM entity tfdd will be running as.
+**Create an auditing IAM role** in each concerned AWS account, and attach the AWS-managed [SecurityAudit](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_job-functions.html#jf_security-auditor) policy. Additionally, if your Terraform state files are stored in S3, ensure that this role has `ListBucket` and `GetObject` permissions for the proper state buckets and files. This is the role that will be assumed before and during execution, so ensure this role is assumable by whatever IAM entity tfdd will be running as.
 
 Be sure to name them all the exact same role name. Any name will do and can be customized using the `--audit-role-name` flag in `tfdd detect`. By default, tfdd assumes the name is `audit-role`.
 
